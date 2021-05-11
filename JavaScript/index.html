@@ -27,36 +27,64 @@
             <p id="timer">00:00:00</p>
 
             <div>
-                <button id="start_stop" class="btn btn-lg btn-primary">
-                    START
-                </button>
+                <button id="start_stop" class="btn btn-lg btn-primary">START</button>
             </div>
         </div>
 
         <script>
-            const addZero = function (value) {
-                if (value < 10) {
-                    value = "0" + value;
-                }
+            let start;
+            let timer_id;
 
-                return value;
-            };
             document
                 .getElementById("start_stop")
                 .addEventListener("click", function () {
-                    let now = new Date();
-                    let seconds = now.getSeconds();
-                    seconds = addZero(seconds);
+                    if (this.innerHTML === "START") {
+                        start = new Date();
 
-                    let minutes = now.getMinutes();
-                    minutes = addZero(minutes);
+                        timer_id = setInterval(goTimer, 10);
 
-                    let hours = now.getHours();
-                    hours = addZero(hours);
+                        this.innerHTML = "STOP";
+                        this.classList.remove("btn-primary");
+                        this.classList.add("btn-danger");
+                    } else {
+                        clearInterval(timer_id);
 
-                    document.getElementById("timer").innerHTML =
-                        hours + ":" + minutes + ":" + seconds;
+                        this.innerHTML ='START';
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-primary')
+                    }
+
+                    
                 });
+
+            let addZero = function (value) {
+                if (value < 10) {
+                    value = "0" + value;
+                }
+                return value;
+            };
+
+            const goTimer = function () {
+                const now = new Date();
+
+                let milli = now.getTime() - start.getTime();
+                let seconds = Math.floor(milli / 1000);
+                let minutes = Math.floor(seconds / 60);
+                let hours = Math.floor(minutes / 60);
+
+                seconds = seconds - minutes * 60;
+                minutes = minutes - hours * 60;
+
+                hours = addZero(hours);
+                minutes = addZero(minutes);
+                seconds = addZero(seconds);
+
+                document.getElementById("timer").innerHTML =
+                    hours + ":" + minutes + ":" + seconds;
+
+                //               document.getElementById('timer').innerHTML =
+                //    now.getTime() - start.getTime();
+            };
         </script>
     </body>
 </html>
